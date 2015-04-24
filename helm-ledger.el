@@ -3,7 +3,7 @@
 ;; Copyright (C) 2015 Erik Hetzner
 
 ;; Author: Erik Hetzner
-;; Package-Requires: ((helm "1.6.0"))
+;; Package-Requires: ((helm "1.6.0") (hydra "0.12.0")
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'helm)
+(require 'hydra)
 
 (defvar helm-ledger-help-message
   "\n* Helm Ledger\n
@@ -37,12 +38,19 @@
 \n** Helm Map\n
 \\{helm-map}")
 
+(defhydra helm-ledger-hydra-menu
+  (:exit t)
+  "
+Helm Ledger options
+"
+  ("p" helm-ledger-filter-payee "filter by payee")
+  ("a" helm-ledger-filter-account "filter by account"))
+
 (defvar helm-ledger-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map helm-map)
     (define-key map (kbd "C-c ?") 'helm-ledger-help)
-    (define-key map (kbd "C-c M-p") #'helm-ledger-filter-payee)
-    (define-key map (kbd "C-c M-a") #'helm-ledger-filter-account)
+    (define-key map (kbd "C-c C-c") #'helm-ledger-hydra-menu/body)
     map)
   "Keymap for `helm-ledger'.")
 
